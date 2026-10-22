@@ -10,10 +10,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JasperViewer;
+
 
 /**
  * Modern Classic Sales Report Window for POS Desktop Application.
@@ -152,19 +149,7 @@ public class laporan extends javax.swing.JFrame {
     }
 
     private void printJasperReport() {
-        try {
-            JasperPrint jp = JasperFillManager.fillReport(
-                    getClass().getResourceAsStream("reportPenjualan.jasper"),
-                    null,
-                    DriverManager.getConnection("jdbc:mysql://localhost:3306/program_aplikasi", "root", "")
-            );
-            JasperViewer.viewReport(jp, false);
-        } catch (JRException | SQLException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Gagal memuat pratinjau JasperReports:\n" + ex.getMessage(),
-                    "Laporan Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+        ReportService.printSalesReport(this);
     }
 
     private void loadReportData() {

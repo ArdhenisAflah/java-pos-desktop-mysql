@@ -1,6 +1,5 @@
 package penjualans;
 
-import com.toedter.calendar.JDateChooser;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,10 +17,6 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * Modern Classic Cashier & Sales Transaction Window for POS Desktop Application.
@@ -48,9 +44,8 @@ public class penjualan extends javax.swing.JFrame {
         UITheme.styleTable(tabel, jScrollPane1);
 
         // Set default date to today
-        tanggal.setDate(new Date());
         SimpleDateFormat format_tanggal = new SimpleDateFormat("yyyy-MM-dd");
-        tgl = format_tanggal.format(tanggal.getDate());
+        tgl = format_tanggal.format((Date) tanggal.getValue());
 
         combobox();
         combobarang();
@@ -73,7 +68,10 @@ public class penjualan extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         combobox = new javax.swing.JComboBox<>();
-        tanggal = new com.toedter.calendar.JDateChooser();
+        tanggal = new javax.swing.JSpinner(new javax.swing.SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH));
+        javax.swing.JSpinner.DateEditor de = new javax.swing.JSpinner.DateEditor(tanggal, "yyyy-MM-dd");
+        tanggal.setEditor(de);
+
         jLabel5 = new javax.swing.JLabel();
         combobarang = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
@@ -94,12 +92,6 @@ public class penjualan extends javax.swing.JFrame {
         setTitle("Transaksi Kasir & Penjualan - Sistem Kasir");
 
         combobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-- Pilih Kasir / User --" }));
-
-        tanggal.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                tanggalPropertyChange(evt);
-            }
-        });
 
         combobarang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-- Pilih Produk Barang --" }));
         combobarang.addActionListener(new java.awt.event.ActionListener() {
@@ -209,7 +201,7 @@ public class penjualan extends javax.swing.JFrame {
         formCard.add(idpenjualan, fcGbc);
 
         // Tanggal
-        jLabel3.setText("Tanggal Transaksi");
+        jLabel3.setText("Tanggal Transaksi (yyyy-MM-dd)");
         jLabel3.setFont(UITheme.FONT_LABEL);
         jLabel3.setForeground(UITheme.TEXT_DARK);
         fcGbc.gridy = row++;
@@ -218,6 +210,10 @@ public class penjualan extends javax.swing.JFrame {
 
         tanggal.setFont(UITheme.FONT_INPUT);
         tanggal.setBackground(UITheme.BG_CARD);
+        tanggal.setBorder(new CompoundBorder(
+                new LineBorder(UITheme.BORDER_COLOR, 1, true),
+                new EmptyBorder(4, 6, 4, 6)
+        ));
         fcGbc.gridy = row++;
         fcGbc.insets = new Insets(0, 0, 10, 0);
         formCard.add(tanggal, fcGbc);
@@ -403,7 +399,7 @@ public class penjualan extends javax.swing.JFrame {
 
     private void resetForm() {
         autoGenerateId();
-        tanggal.setDate(new Date());
+        tanggal.setValue(new Date());
         combobox.setSelectedIndex(0);
         combobarang.setSelectedIndex(0);
         harga.setText("");
@@ -412,13 +408,6 @@ public class penjualan extends javax.swing.JFrame {
         totalDisplayLabel.setText("Rp 0");
         tabel.clearSelection();
     }
-
-    private void tanggalPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tanggalPropertyChange
-        if (tanggal.getDate() != null) {
-            SimpleDateFormat format_tanggal = new SimpleDateFormat("yyyy-MM-dd");
-            tgl = format_tanggal.format(tanggal.getDate());
-        }
-    }//GEN-LAST:event_tanggalPropertyChange
 
     private void combobarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combobarangActionPerformed
         if (combobarang.getSelectedIndex() <= 0) {
@@ -459,6 +448,9 @@ public class penjualan extends javax.swing.JFrame {
 
         jButton1ActionPerformed(null); // Ensure total is calculated
 
+        SimpleDateFormat format_tanggal = new SimpleDateFormat("yyyy-MM-dd");
+        tgl = format_tanggal.format((Date) tanggal.getValue());
+
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/program_aplikasi", "root", "");
             PreparedStatement ps = con.prepareStatement("INSERT INTO penjualan (id_penjualan, tanggal, id_user, id_barang, jumlah, total) VALUES (?, ?, ?, ?, ?, ?)");
@@ -484,7 +476,7 @@ public class penjualan extends javax.swing.JFrame {
             idpenjualan.setText(dfm.getValueAt(i, 0).toString());
             try {
                 Date format_tanggal = new SimpleDateFormat("yyyy-MM-dd").parse(dfm.getValueAt(i, 1).toString());
-                tanggal.setDate(format_tanggal);
+                tanggal.setValue(format_tanggal);
             } catch (ParseException ex) {
                 // Ignore parse error
             }
@@ -509,6 +501,9 @@ public class penjualan extends javax.swing.JFrame {
         }
 
         jButton1ActionPerformed(null);
+
+        SimpleDateFormat format_tanggal = new SimpleDateFormat("yyyy-MM-dd");
+        tgl = format_tanggal.format((Date) tanggal.getValue());
 
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/program_aplikasi", "root", "");
@@ -560,19 +555,7 @@ public class penjualan extends javax.swing.JFrame {
     }//GEN-LAST:event_hapusActionPerformed
 
     private void cetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cetakActionPerformed
-        try {
-            JasperPrint jp = JasperFillManager.fillReport(
-                    getClass().getResourceAsStream("reportPenjualan.jasper"),
-                    null,
-                    DriverManager.getConnection("jdbc:mysql://localhost:3306/program_aplikasi", "root", "")
-            );
-            JasperViewer.viewReport(jp, false);
-        } catch (JRException | SQLException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Gagal memuat cetakan struk/laporan:\n" + ex.getMessage(),
-                    "Laporan Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+        ReportService.printSalesReport(this);
     }//GEN-LAST:event_cetakActionPerformed
 
     private void tampilkan() {
@@ -647,7 +630,7 @@ public class penjualan extends javax.swing.JFrame {
     private javax.swing.JTextField jumlah;
     private javax.swing.JTable tabel;
     private javax.swing.JButton tambah;
-    private com.toedter.calendar.JDateChooser tanggal;
+    private javax.swing.JSpinner tanggal;
     private javax.swing.JTextField total;
     // End of variables declaration//GEN-END:variables
 }
