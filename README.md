@@ -4,6 +4,35 @@ Desktop Point of Sales (Kasir dan Manajemen Penjualan) application built with Ja
 
 ---
 
+## User Interface and Feature Preview
+
+### 1. Authentication (`login.java`)
+Centered authentication card with masked password entry (`JPasswordField`), input validation, and default administrator credentials (`admin / admin`).
+
+![Login Interface](docs/screenshots/01_login.png)
+
+### 2. Main Executive Dashboard (`menu.java`)
+Navigation center displaying active session status (`● Sesi Aktif: Administrator`), quick logout, and module shortcut cards for inventory, cashier transactions, user administration, and sales reporting.
+
+![Main Dashboard](docs/screenshots/02_dashboard.png)
+
+### 3. Inventory Management (`barang.java`)
+Dual-card layout separating product input fields (Kode / ID Barang, Nama Barang, Harga Satuan, Jumlah Stok) from the live inventory catalog table with real-time item counter.
+
+![Inventory Management](docs/screenshots/03_data_barang.png)
+
+### 4. User Account Administration (`user.java`)
+Cashier and administrator credential management featuring user creation, updates, password management, and active user registry table.
+
+![User Management](docs/screenshots/04_kelola_pengguna.png)
+
+### 5. Cashier Checkout and Sales Transactions (`penjualan.java`)
+Transaction register featuring real-time total billing display, auto-generated transaction IDs, cashier and product dropdown selection, unit quantity multipliers, smooth-scrolling transaction history, and receipt printing.
+
+![Cashier Register and Transactions](docs/screenshots/05_transaksi_kasir.png)
+
+---
+
 ## 1. System Requirements
 
 Ensure the following software is installed on the host machine:
@@ -106,6 +135,13 @@ Once the database is imported, the default administrator account is available:
 ```
 .
 ├── database.sql                  # Database creation script and seed records
+├── docs/                         # Documentation assets and screenshots
+│   └── screenshots/
+│       ├── 01_login.png
+│       ├── 02_dashboard.png
+│       ├── 03_data_barang.png
+│       ├── 04_kelola_pengguna.png
+│       └── 05_transaksi_kasir.png
 ├── lib/                          # Bundled runtime dependencies (.jar)
 │   ├── commons-beanutils-1.9.4.jar
 │   ├── commons-collections-3.2.2.jar
