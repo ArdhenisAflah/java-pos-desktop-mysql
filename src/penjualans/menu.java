@@ -189,9 +189,10 @@ public class menu extends javax.swing.JFrame {
         ));
 
         mainContent.add(gridPanel, BorderLayout.CENTER);
-        add(mainContent, BorderLayout.CENTER);
+        add(UITheme.createPageScrollPane(mainContent), BorderLayout.CENTER);
 
-        setSize(900, 620);
+        setSize(920, 620);
+        setResizable(true);
         setLocationRelativeTo(null);
     }
 

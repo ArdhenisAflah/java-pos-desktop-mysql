@@ -33,6 +33,10 @@ public class barang extends javax.swing.JFrame {
         };
         tabel.setModel(dfm);
         UITheme.styleTable(tabel, jScrollPane1);
+        int[] colWidths = {100, 220, 130, 100};
+        for (int i = 0; i < colWidths.length && i < tabel.getColumnCount(); i++) {
+            tabel.getColumnModel().getColumn(i).setPreferredWidth(colWidths[i]);
+        }
         tampilkan();
     }
 
@@ -234,9 +238,11 @@ public class barang extends javax.swing.JFrame {
         gbc.insets = new Insets(0, 0, 0, 0);
         content.add(tableCard, gbc);
 
-        add(content, BorderLayout.CENTER);
+        // Wrap content inside smooth scroll pane
+        add(UITheme.createPageScrollPane(content), BorderLayout.CENTER);
 
         setSize(1000, 640);
+        setResizable(true);
         setLocationRelativeTo(null);
     }
 

@@ -42,6 +42,11 @@ public class penjualan extends javax.swing.JFrame {
         };
         tabel.setModel(dfm);
         UITheme.styleTable(tabel, jScrollPane1);
+        tabel.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        int[] colWidths = {120, 95, 110, 130, 95, 60, 100};
+        for (int i = 0; i < colWidths.length && i < tabel.getColumnCount(); i++) {
+            tabel.getColumnModel().getColumn(i).setPreferredWidth(colWidths[i]);
+        }
 
         // Set default date to today
         SimpleDateFormat format_tanggal = new SimpleDateFormat("yyyy-MM-dd");
@@ -163,7 +168,7 @@ public class penjualan extends javax.swing.JFrame {
         // Main Grid: Left (Form + Total Card) & Right (Table Card)
         JPanel content = new JPanel(new GridBagLayout());
         content.setBackground(UITheme.BG_CANVAS);
-        content.setBorder(new EmptyBorder(18, 24, 18, 24));
+        content.setBorder(new EmptyBorder(12, 16, 12, 16));
         GridBagConstraints gbc = new GridBagConstraints();
 
         // --- LEFT COLUMN: Form + Payment Summary ---
@@ -174,9 +179,13 @@ public class penjualan extends javax.swing.JFrame {
         // Card 1: Input Form
         JPanel formCard = UITheme.createCard();
         formCard.setLayout(new GridBagLayout());
+        formCard.setBorder(new CompoundBorder(
+                new LineBorder(UITheme.BORDER_COLOR, 1, true),
+                new EmptyBorder(10, 14, 10, 14)
+        ));
         GridBagConstraints fcGbc = new GridBagConstraints();
         fcGbc.fill = GridBagConstraints.HORIZONTAL;
-        fcGbc.insets = new Insets(0, 0, 8, 0);
+        fcGbc.insets = new Insets(0, 0, 6, 0);
         fcGbc.gridx = 0;
         int row = 0;
 
@@ -184,7 +193,7 @@ public class penjualan extends javax.swing.JFrame {
         formTitle.setFont(UITheme.FONT_SECTION);
         formTitle.setForeground(UITheme.PRIMARY);
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 14, 0);
+        fcGbc.insets = new Insets(0, 0, 8, 0);
         formCard.add(formTitle, fcGbc);
 
         // ID Transaksi
@@ -192,12 +201,12 @@ public class penjualan extends javax.swing.JFrame {
         jLabel2.setFont(UITheme.FONT_LABEL);
         jLabel2.setForeground(UITheme.TEXT_DARK);
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 4, 0);
+        fcGbc.insets = new Insets(0, 0, 2, 0);
         formCard.add(jLabel2, fcGbc);
 
         UITheme.styleTextField(idpenjualan);
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 10, 0);
+        fcGbc.insets = new Insets(0, 0, 6, 0);
         formCard.add(idpenjualan, fcGbc);
 
         // Tanggal
@@ -205,7 +214,7 @@ public class penjualan extends javax.swing.JFrame {
         jLabel3.setFont(UITheme.FONT_LABEL);
         jLabel3.setForeground(UITheme.TEXT_DARK);
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 4, 0);
+        fcGbc.insets = new Insets(0, 0, 2, 0);
         formCard.add(jLabel3, fcGbc);
 
         tanggal.setFont(UITheme.FONT_INPUT);
@@ -215,7 +224,7 @@ public class penjualan extends javax.swing.JFrame {
                 new EmptyBorder(4, 6, 4, 6)
         ));
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 10, 0);
+        fcGbc.insets = new Insets(0, 0, 6, 0);
         formCard.add(tanggal, fcGbc);
 
         // User / Kasir
@@ -223,12 +232,12 @@ public class penjualan extends javax.swing.JFrame {
         jLabel4.setFont(UITheme.FONT_LABEL);
         jLabel4.setForeground(UITheme.TEXT_DARK);
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 4, 0);
+        fcGbc.insets = new Insets(0, 0, 2, 0);
         formCard.add(jLabel4, fcGbc);
 
         UITheme.styleComboBox(combobox);
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 10, 0);
+        fcGbc.insets = new Insets(0, 0, 6, 0);
         formCard.add(combobox, fcGbc);
 
         // Barang
@@ -236,19 +245,19 @@ public class penjualan extends javax.swing.JFrame {
         jLabel5.setFont(UITheme.FONT_LABEL);
         jLabel5.setForeground(UITheme.TEXT_DARK);
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 4, 0);
+        fcGbc.insets = new Insets(0, 0, 2, 0);
         formCard.add(jLabel5, fcGbc);
 
         UITheme.styleComboBox(combobarang);
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 10, 0);
+        fcGbc.insets = new Insets(0, 0, 6, 0);
         formCard.add(combobarang, fcGbc);
 
         // Harga & Jumlah side-by-side
-        JPanel priceQtyPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        JPanel priceQtyPanel = new JPanel(new GridLayout(1, 2, 8, 0));
         priceQtyPanel.setBackground(UITheme.BG_CARD);
 
-        JPanel priceBlock = new JPanel(new BorderLayout(0, 4));
+        JPanel priceBlock = new JPanel(new BorderLayout(0, 2));
         priceBlock.setBackground(UITheme.BG_CARD);
         jLabel6.setText("Harga Satuan (Rp)");
         jLabel6.setFont(UITheme.FONT_LABEL);
@@ -257,7 +266,7 @@ public class penjualan extends javax.swing.JFrame {
         priceBlock.add(jLabel6, BorderLayout.NORTH);
         priceBlock.add(harga, BorderLayout.CENTER);
 
-        JPanel qtyBlock = new JPanel(new BorderLayout(0, 4));
+        JPanel qtyBlock = new JPanel(new BorderLayout(0, 2));
         qtyBlock.setBackground(UITheme.BG_CARD);
         jLabel7.setText("Jumlah (Qty)");
         jLabel7.setFont(UITheme.FONT_LABEL);
@@ -270,11 +279,11 @@ public class penjualan extends javax.swing.JFrame {
         priceQtyPanel.add(qtyBlock);
 
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 10, 0);
+        fcGbc.insets = new Insets(0, 0, 6, 0);
         formCard.add(priceQtyPanel, fcGbc);
 
         // Cek Total Button + Field
-        JPanel calcRow = new JPanel(new BorderLayout(8, 0));
+        JPanel calcRow = new JPanel(new BorderLayout(6, 0));
         calcRow.setBackground(UITheme.BG_CARD);
         UITheme.styleTextField(total);
         total.setEditable(false);
@@ -286,22 +295,22 @@ public class penjualan extends javax.swing.JFrame {
         jLabel8.setFont(UITheme.FONT_LABEL);
         jLabel8.setForeground(UITheme.TEXT_DARK);
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 4, 0);
+        fcGbc.insets = new Insets(0, 0, 2, 0);
         formCard.add(jLabel8, fcGbc);
 
         fcGbc.gridy = row++;
-        fcGbc.insets = new Insets(0, 0, 14, 0);
+        fcGbc.insets = new Insets(0, 0, 8, 0);
         formCard.add(calcRow, fcGbc);
 
         leftCol.add(formCard);
-        leftCol.add(Box.createRigidArea(new Dimension(0, 12)));
+        leftCol.add(Box.createRigidArea(new Dimension(0, 8)));
 
         // Card 2: Total Payment Banner & Action Buttons
-        JPanel summaryCard = new JPanel(new BorderLayout(0, 10));
+        JPanel summaryCard = new JPanel(new BorderLayout(0, 6));
         summaryCard.setBackground(UITheme.PRIMARY);
         summaryCard.setBorder(new CompoundBorder(
                 new LineBorder(UITheme.PRIMARY, 1, true),
-                new EmptyBorder(14, 18, 14, 18)
+                new EmptyBorder(8, 14, 8, 14)
         ));
 
         JLabel sumTitle = new JLabel("TOTAL TAGIHAN");
@@ -309,16 +318,16 @@ public class penjualan extends javax.swing.JFrame {
         sumTitle.setForeground(new Color(148, 163, 184)); // Muted slate
 
         totalDisplayLabel = new JLabel("Rp 0");
-        totalDisplayLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        totalDisplayLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         totalDisplayLabel.setForeground(Color.WHITE);
 
         summaryCard.add(sumTitle, BorderLayout.NORTH);
         summaryCard.add(totalDisplayLabel, BorderLayout.CENTER);
 
         // Action Buttons Row
-        JPanel actionRow = new JPanel(new GridLayout(1, 4, 8, 0));
+        JPanel actionRow = new JPanel(new GridLayout(1, 4, 6, 0));
         actionRow.setBackground(UITheme.BG_CANVAS);
-        actionRow.setBorder(new EmptyBorder(10, 0, 0, 0));
+        actionRow.setBorder(new EmptyBorder(6, 0, 0, 0));
 
         UITheme.styleButton(tambah, UITheme.SUCCESS, Color.WHITE);
         UITheme.styleButton(edit, UITheme.PRIMARY, Color.WHITE);
@@ -335,41 +344,52 @@ public class penjualan extends javax.swing.JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.40;
+        gbc.weightx = 0.38;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(0, 0, 0, 18);
+        gbc.insets = new Insets(0, 0, 0, 14);
         content.add(leftCol, gbc);
 
         // --- RIGHT COLUMN: Table of Transactions ---
         JPanel tableCard = UITheme.createCard();
-        tableCard.setLayout(new BorderLayout(0, 12));
+        tableCard.setLayout(new BorderLayout(0, 8));
+        tableCard.setBorder(new CompoundBorder(
+                new LineBorder(UITheme.BORDER_COLOR, 1, true),
+                new EmptyBorder(10, 14, 10, 14)
+        ));
 
-        JPanel tableHeader = new JPanel(new BorderLayout());
+        JPanel tableHeader = new JPanel();
+        tableHeader.setLayout(new BoxLayout(tableHeader, BoxLayout.Y_AXIS));
         tableHeader.setBackground(UITheme.BG_CARD);
+        tableHeader.setBorder(new EmptyBorder(0, 0, 6, 0));
 
         JLabel tableTitle = new JLabel("Riwayat Transaksi Penjualan");
         tableTitle.setFont(UITheme.FONT_SECTION);
         tableTitle.setForeground(UITheme.PRIMARY);
+        tableTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        trxCountBadge = new JLabel("Total: 0 transaksi");
+        trxCountBadge = new JLabel("Total: 0 transaksi tercatat");
         trxCountBadge.setFont(UITheme.FONT_LABEL);
         trxCountBadge.setForeground(UITheme.ACCENT);
+        trxCountBadge.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        tableHeader.add(tableTitle, BorderLayout.WEST);
-        tableHeader.add(trxCountBadge, BorderLayout.EAST);
+        tableHeader.add(tableTitle);
+        tableHeader.add(Box.createRigidArea(new Dimension(0, 2)));
+        tableHeader.add(trxCountBadge);
         tableCard.add(tableHeader, BorderLayout.NORTH);
 
         tableCard.add(jScrollPane1, BorderLayout.CENTER);
 
         gbc.gridx = 1;
-        gbc.weightx = 0.60;
+        gbc.weightx = 0.62;
         gbc.insets = new Insets(0, 0, 0, 0);
         content.add(tableCard, gbc);
 
-        add(content, BorderLayout.CENTER);
+        // Wrap full content inside smooth scroll pane so UI is never cut off
+        add(UITheme.createPageScrollPane(content), BorderLayout.CENTER);
 
-        setSize(1080, 680);
+        setSize(1100, 640);
+        setResizable(true);
         setLocationRelativeTo(null);
     }
 

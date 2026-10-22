@@ -192,6 +192,8 @@ public class UITheme {
         table.setSelectionBackground(TABLE_SELECTED);
         table.setSelectionForeground(TEXT_DARK);
 
+        table.setFillsViewportHeight(true);
+
         // Header
         JTableHeader header = table.getTableHeader();
         header.setFont(FONT_LABEL);
@@ -218,7 +220,25 @@ public class UITheme {
         if (scrollPane != null) {
             scrollPane.setBorder(new LineBorder(BORDER_COLOR, 1, true));
             scrollPane.getViewport().setBackground(BG_CARD);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+            scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
         }
+    }
+
+    /**
+     * Wraps any component inside a clean, borderless JScrollPane with smooth mouse-wheel scrolling.
+     */
+    public static JScrollPane createPageScrollPane(JComponent view) {
+        JScrollPane scrollPane = new JScrollPane(view);
+        scrollPane.setBorder(null);
+        scrollPane.getViewport().setBackground(BG_CANVAS);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
+        return scrollPane;
     }
 
     /**

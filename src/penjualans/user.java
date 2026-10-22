@@ -34,6 +34,10 @@ public class user extends javax.swing.JFrame {
         };
         tabel.setModel(model);
         UITheme.styleTable(tabel, jScrollPane2);
+        int[] colWidths = {100, 180, 140, 120};
+        for (int i = 0; i < colWidths.length && i < tabel.getColumnCount(); i++) {
+            tabel.getColumnModel().getColumn(i).setPreferredWidth(colWidths[i]);
+        }
         tampilkan();
     }
 
@@ -238,9 +242,11 @@ public class user extends javax.swing.JFrame {
         gbc.insets = new Insets(0, 0, 0, 0);
         content.add(tableCard, gbc);
 
-        add(content, BorderLayout.CENTER);
+        // Wrap content inside smooth scroll pane
+        add(UITheme.createPageScrollPane(content), BorderLayout.CENTER);
 
         setSize(980, 620);
+        setResizable(true);
         setLocationRelativeTo(null);
     }
 

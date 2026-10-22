@@ -122,13 +122,19 @@ public class laporan extends javax.swing.JFrame {
         reportTable = new JTable(model);
         reportScroll = new JScrollPane(reportTable);
         UITheme.styleTable(reportTable, reportScroll);
+        reportTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        int[] colWidths = {120, 100, 130, 150, 90, 130};
+        for (int i = 0; i < colWidths.length && i < reportTable.getColumnCount(); i++) {
+            reportTable.getColumnModel().getColumn(i).setPreferredWidth(colWidths[i]);
+        }
 
         tableCard.add(reportScroll, BorderLayout.CENTER);
         mainWrapper.add(tableCard, BorderLayout.CENTER);
 
-        add(mainWrapper, BorderLayout.CENTER);
+        add(UITheme.createPageScrollPane(mainWrapper), BorderLayout.CENTER);
 
         setSize(1040, 680);
+        setResizable(true);
         setLocationRelativeTo(null);
     }
 
