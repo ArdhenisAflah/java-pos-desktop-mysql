@@ -20,6 +20,9 @@ public class ReportService {
      */
     public static void printSalesReport(Component parent) {
         try {
+            // Configure JasperReports to ignore missing system fonts gracefully
+            System.setProperty("net.sf.jasperreports.awt.ignore.missing.font", "true");
+
             // Check if JasperReports engine is present on classpath
             Class<?> fillManagerClass = Class.forName("net.sf.jasperreports.engine.JasperFillManager");
             Class<?> viewerClass = Class.forName("net.sf.jasperreports.view.JasperViewer");
@@ -59,9 +62,17 @@ public class ReportService {
                     "java -cp \"lib/*:build/classes\" penjualans.login",
                     "Pustaka JasperReports Tidak Ditemukan",
                     JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
+        } catch (java.lang.reflect.InvocationTargetException ex) {
+            Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+            String msg = cause.getMessage() != null ? cause.getMessage() : cause.toString();
             JOptionPane.showMessageDialog(parent,
-                    "Terjadi kesalahan saat memproses laporan penjualan:\n" + ex.getMessage(),
+                    "Terjadi kesalahan saat memproses laporan penjualan:\n" + msg,
+                    "Laporan Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            String msg = ex.getMessage() != null ? ex.getMessage() : ex.toString();
+            JOptionPane.showMessageDialog(parent,
+                    "Terjadi kesalahan saat memproses laporan penjualan:\n" + msg,
                     "Laporan Error",
                     JOptionPane.ERROR_MESSAGE);
         }
