@@ -33,6 +33,22 @@ Transaction register featuring real-time total billing display, auto-generated t
 
 ---
 
+## Downloads and Standalone Executables
+
+Pre-compiled standalone packages are available under GitHub Releases:
+**[Download Latest Release (v1.0.0)](https://github.com/ArdhenisAflah/java-pos-desktop-mysql/releases/tag/v1.0.0)**
+
+| Package | Target Platform | Execution Method |
+| :--- | :--- | :--- |
+| `POS-System-v1.0.0.exe` | Windows 10/11 (64/32-bit) | Double-click to launch natively |
+| `pos-system-v1.0.0-linux.run` | Linux (x86_64) | `./pos-system-v1.0.0-linux.run` |
+| `pos-system-v1.0.0.jar` | Cross-Platform (Windows/Linux/macOS) | `java -jar pos-system-v1.0.0.jar` |
+| `pos-system-v1.0.0-portable.zip` | All Platforms | Portable ZIP archive containing all binaries and launchers |
+
+> Note: Running the application requires a local MySQL / MariaDB server with the `program_aplikasi` database imported.
+
+---
+
 ## 1. System Requirements
 
 Ensure the following software is installed on the host machine:
