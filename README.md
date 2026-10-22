@@ -1,105 +1,284 @@
-# Java Point of Sales (POS) Desktop App with MySQL
+# Point of Sales (POS) Desktop Application with Java Swing and MySQL
 
-A modern classic Desktop Point of Sales (Kasir & Penjualan) application built with Java Swing and MySQL, featuring clean typography, structured card layouts, and complete CRUD workflows.
-
-## Modern Classic UI Highlights
-
-- **Pure White & Slate Color Palette**: Crisp white cards (`#FFFFFF`) on a soft canvas (`#F8FAFC`) with classic slate headers (`#1E293B`) and subtle borders (`#E2E8F0`).
-- **Standardized Typography**: Clean font scaling and hierarchy (`Segoe UI` / SansSerif) with bold section titles, descriptive field labels, and formatted badges.
-- **Enhanced Login Card**: Centered modern card with masked password entry (`JPasswordField`), informative subheaders, and Enter-key submission.
-- **Executive Navigation Dashboard (`menu.java`)**:
-  - Live status header with active operator badge.
-  - Interactive quick-action navigation cards for all modules.
-- **Refined Data Forms (`barang.java` & `user.java`)**:
-  - Side-by-side cards separating input controls from table listings.
-  - Aligned inputs, placeholder hints, action buttons (Tambah, Perbarui, Hapus, Reset).
-  - Live item count badges.
-- **Cashier Transaction Workspace (`penjualan.java`)**:
-  - High-visibility total billing banner displaying formatted Rupiah totals in real-time.
-  - Automatic product pricing lookup, date chooser, and receipt printing.
-- **Comprehensive Sales Reporting (`laporan.java`)**:
-  - Integrated KPI summary metrics (Total Transaksi, Total Omset Pendapatan, Total Unit Terjual).
-  - JasperReports report preview and export integration.
-- **Consistent Navigation**: Seamless `← Kembali ke Menu Utama` return button across all child windows.
+Desktop Point of Sales (Kasir dan Manajemen Penjualan) application built with Java Swing and MySQL database. The system handles inventory management, user authentication, transaction recording with automatic totals, and report generation via JasperReports.
 
 ---
 
-## Architecture & Tech Stack
+## 1. System Requirements
 
-- **Language**: Java (JDK 8 / 11 / 17 / 21)
-- **GUI Framework**: Java Swing (AWT / Swing Component Hierarchy)
-- **Design System**: Built-in `UITheme` utility class
-- **Database**: MySQL (`program_aplikasi`) via JDBC
-- **Calendar Picker**: JCalendar 1.4
-- **Reporting Engine**: JasperReports 6.x
+Ensure the following software is installed on the host machine:
 
----
-
-## Database Setup
-
-1. Start your local MySQL / MariaDB server (via XAMPP, Laragon, standalone service, or Docker):
-   ```bash
-   # Quick Docker setup:
-   docker run --name pos-mysql -d -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_DATABASE=program_aplikasi -p 3306:3306 mysql:8.0
-   ```
-2. Import the provided schema file [`database.sql`](database.sql):
-   ```bash
-   mysql -u root -p program_aplikasi < database.sql
-   ```
-3. Default credentials:
-   - **Username**: `admin`
-   - **Password**: `admin`
+| Component | Minimum Version | Recommended Version |
+| :--- | :--- | :--- |
+| **Java Development Kit (JDK)** | OpenJDK 8 / Oracle JDK 8 | OpenJDK 11, 17, or 21 |
+| **Relational Database** | MySQL 5.7 / MariaDB 10.3 | MySQL 8.0+ |
+| **Build Tool (Optional)** | Apache Ant 1.10+ | Bundled with NetBeans |
+| **IDE (Optional)** | Apache NetBeans 12.0+ | Apache NetBeans 18+ |
+| **Operating System** | Linux, Windows 10/11, macOS | Any OS with Java Desktop Support |
 
 ---
 
-## Project Structure
+## 2. Bundled Libraries
+
+All third-party dependencies are pre-bundled in the `lib/` directory:
+
+| JAR File | Purpose |
+| :--- | :--- |
+| `mysql-connector-j-8.0.31.jar` | JDBC driver for MySQL database connectivity |
+| `jasperreports.jar` (v6.20.0) | Reporting engine for sales document generation and preview |
+| `groovy-3.0.19.jar` | Groovy expression compiler runtime required by JasperReports |
+| `commons-collections4-4.4.jar` | Collection utilities required by JasperReports 6.x |
+| `commons-beanutils-1.9.4.jar` | Property introspection used by JasperReports |
+| `commons-collections-3.2.2.jar` | Legacy collection support for JasperReports components |
+| `commons-digester-2.1.jar` | XML rule-based parser for `.jrxml` templates |
+| `commons-logging-1.2.jar` | Logging facade used across Jakarta Commons libraries |
+| `jcalendar-1.4.jar` | Date picker component library |
+
+---
+
+## 3. Database Installation and Configuration
+
+### 3.1 Connection Parameters
+
+The application connects using the following default configuration across all modules:
+
+- **Host**: `localhost`
+- **Port**: `3306`
+- **Database Name**: `program_aplikasi`
+- **Username**: `root`
+- **Password**: `` (blank)
+- **JDBC URL**: `jdbc:mysql://localhost:3306/program_aplikasi`
+
+### 3.2 Schema Initialization
+
+#### Option A: Using MySQL Command Line
+
+Run the following commands in terminal or command prompt:
+
+```bash
+# 1. Log in and create database
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS program_aplikasi;"
+
+# 2. Import database schema and initial data
+mysql -u root -p program_aplikasi < database.sql
+```
+
+If your local MySQL root user has no password, omit the `-p` flag:
+
+```bash
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS program_aplikasi;"
+mysql -u root program_aplikasi < database.sql
+```
+
+#### Option B: Using phpMyAdmin (XAMPP / Laragon / WampServer)
+
+1. Open `http://localhost/phpmyadmin` in your web browser.
+2. Click **New** in the left sidebar.
+3. Enter database name `program_aplikasi` and click **Create**.
+4. Select `program_aplikasi`, navigate to the **Import** tab.
+5. Click **Choose File**, select `database.sql` from this project directory.
+6. Click **Import** at the bottom of the page.
+
+#### Option C: Using Docker
+
+To run an isolated MySQL container with the project schema preloaded:
+
+```bash
+docker run --name pos-mysql \
+  -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+  -e MYSQL_DATABASE=program_aplikasi \
+  -v $(pwd)/database.sql:/docker-entrypoint-initdb.d/init.sql:ro \
+  -p 3306:3306 \
+  -d mysql:8.0
+```
+
+### 3.3 Default Credentials
+
+Once the database is imported, the default administrator account is available:
+
+- **Username**: `admin`
+- **Password**: `admin`
+
+---
+
+## 4. Project Directory Structure
 
 ```
 .
-├── database.sql               # Database schema & initial seed data
-├── lib/                       # Portable dependencies
-│   ├── mysql-connector-j-8.0.31.jar
+├── database.sql                  # Database creation script and seed records
+├── lib/                          # Bundled runtime dependencies (.jar)
+│   ├── commons-beanutils-1.9.4.jar
+│   ├── commons-collections-3.2.2.jar
+│   ├── commons-collections4-4.4.jar
+│   ├── commons-digester-2.1.jar
+│   ├── commons-logging-1.2.jar
+│   ├── groovy-3.0.19.jar
+│   ├── jasperreports.jar
 │   ├── jcalendar-1.4.jar
-│   └── jasperreports.jar
+│   └── mysql-connector-j-8.0.31.jar
 ├── src/
+│   ├── jasperreports.properties  # Global JasperReports configuration
 │   └── penjualans/
-│       ├── UITheme.java       # Centralized modern classic design system
-│       ├── login.java         # Centered modern login card
-│       ├── menu.java          # Executive POS dashboard & card grid
-│       ├── barang.java        # Inventory & stock management
-│       ├── user.java          # Cashier & admin account management
-│       ├── penjualan.java     # Cashier checkout & transaction workspace
-│       ├── laporan.java       # Sales KPI summary & report viewer
-│       ├── reportPenjualan.jrxml  # JasperReport template
-│       └── reportPenjualan.jasper # Compiled JasperReport binary
-├── nbproject/                 # NetBeans project configuration
-└── build.xml                  # Ant build script
+│       ├── UITheme.java          # Centralized UI styling, fonts, and colors
+│       ├── ReportService.java    # Safe JasperReports wrapper and viewer
+│       ├── login.java            # Authentication window
+│       ├── menu.java             # Main dashboard navigation window
+│       ├── barang.java           # Inventory management window
+│       ├── user.java             # User account management window
+│       ├── penjualan.java        # Cashier checkout and transaction window
+│       ├── laporan.java          # Sales reporting and KPI metrics window
+│       ├── reportPenjualan.jrxml # Source report layout template (XML)
+│       └── reportPenjualan.jasper# Compiled binary report template
+├── nbproject/                    # NetBeans project configuration
+├── build.xml                     # Apache Ant build script
+└── README.md
 ```
 
 ---
 
-## Running the Application
+## 5. Build and Run Instructions
 
-### Option 1: Direct Java Execution (Any OS)
-Compile and launch right from the command line:
+### 5.1 Command Line (Linux / macOS)
+
+From the project root directory:
+
 ```bash
-# Compile with all bundled libraries
+# 1. Create build output directory
+mkdir -p build/classes
+
+# 2. Compile Java source files against bundled libraries
 javac -cp "lib/*:src" -d build/classes $(find src -name "*.java")
 
-# Copy report assets
-cp src/penjualans/*.jpg src/penjualans/*.jasper src/penjualans/*.jrxml build/classes/penjualans/ 2>/dev/null || true
+# 3. Copy runtime resources to class output directory
+cp src/penjualans/*.jasper build/classes/penjualans/ 2>/dev/null || true
+cp src/penjualans/*.jrxml build/classes/penjualans/ 2>/dev/null || true
+cp src/jasperreports.properties build/classes/ 2>/dev/null || true
 
-# Run the Login window
+# 4. Launch the application (starts at Login screen)
 java -cp "lib/*:build/classes" penjualans.login
 ```
 
-### Option 2: NetBeans IDE
-1. Open **NetBeans IDE**.
-2. Select **File > Open Project** and choose this repository directory.
-3. The project is already configured with relative library references in `lib/`.
-4. Right-click `login.java` and click **Run File** (`Shift + F6`).
+### 5.2 Command Line (Windows PowerShell)
+
+```powershell
+# 1. Create build directory
+New-Item -ItemType Directory -Force -Path build\classes
+
+# 2. Compile Java sources
+$sources = Get-ChildItem -Path src -Recurse -Filter *.java | ForEach-Object { $_.FullName }
+javac -cp "lib/*;src" -d build/classes $sources
+
+# 3. Copy resources
+Copy-Item src\penjualans\*.jasper -Destination build\classes\penjualans\ -Force -ErrorAction SilentlyContinue
+Copy-Item src\penjualans\*.jrxml -Destination build\classes\penjualans\ -Force -ErrorAction SilentlyContinue
+Copy-Item src\jasperreports.properties -Destination build\classes\ -Force -ErrorAction SilentlyContinue
+
+# 4. Execute application
+java -cp "lib/*;build/classes" penjualans.login
+```
+
+### 5.3 Apache NetBeans IDE
+
+1. Open NetBeans IDE.
+2. Select **File** > **Open Project**.
+3. Browse to and select the `penjualans` directory.
+4. NetBeans will detect the project using `nbproject/project.properties` (libraries in `lib/` are configured via relative paths).
+5. Ensure MySQL is running locally.
+6. Right-click the project node and select **Clean and Build**.
+7. Right-click `login.java` inside package `penjualans` and select **Run File** (or press `Shift + F6`).
 
 ---
 
-## License
-Open source for educational and portfolio reference.
+## 6. Application Workflow
+
+1. **Authentication (`login.java`)**:
+   - Enter `admin` / `admin`.
+   - Press **Enter** or click **Masuk ke Sistem**.
+2. **Main Dashboard (`menu.java`)**:
+   - Provides status monitoring and one-click navigation to all four operational modules:
+     - **Data Barang**: Manage product catalogs, unit prices, and stock counts.
+     - **Transaksi Kasir**: Process customer purchases, choose cashier and items, compute subtotals, and record transactions.
+     - **Kelola Pengguna**: Register and administer cashier and manager accounts.
+     - **Laporan Penjualan**: View revenue summary cards (Total Transaksi, Total Omset, Total Barang Terjual) and export printable reports.
+3. **Receipt & Report Generation**:
+   - Clicking **Cetak Struk** on the transaction window or **Cetak Dokumen JasperReports** on the report window opens the interactive JasperReports viewer.
+   - The viewer supports zooming, printing to local printers, and exporting to PDF, XLS, CSV, or HTML.
+
+---
+
+## 7. Configuration Details
+
+### 7.1 Changing Database Credentials
+
+If your local MySQL setup uses a password or a different port, update the connection strings in the source files:
+
+- `src/penjualans/login.java`
+- `src/penjualans/penjualan.java`
+- `src/penjualans/barang.java`
+- `src/penjualans/user.java`
+- `src/penjualans/laporan.java`
+- `src/penjualans/ReportService.java`
+
+Format:
+```java
+Connection con = DriverManager.getConnection("jdbc:mysql://<HOST>:<PORT>/<DATABASE>", "<USERNAME>", "<PASSWORD>");
+```
+
+Example for user `root` with password `secret` on port `3306`:
+```java
+Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/program_aplikasi", "root", "secret");
+```
+
+### 7.2 JasperReports Configuration
+
+The file `src/jasperreports.properties` defines engine parameters:
+
+```properties
+net.sf.jasperreports.awt.ignore.missing.font=true
+```
+
+This ensures that report generation falls back gracefully to system standard fonts on platforms where proprietary Microsoft Windows fonts (such as Times New Roman) are not installed.
+
+---
+
+## 8. Troubleshooting
+
+### Problem: `CommunicationsException: Communications link failure`
+- **Cause**: The application cannot connect to MySQL at `localhost:3306`.
+- **Solution**:
+  1. Check if the MySQL server is active:
+     - Linux: `sudo systemctl status mysql` or `sudo systemctl status mariadb`
+     - Windows: Open Services (`services.msc`) and verify `MySQL` / `MariaDB` service status.
+  2. Verify that MySQL is listening on port 3306:
+     ```bash
+     netstat -tlpn | grep 3306
+     ```
+
+### Problem: `Access denied for user 'root'@'localhost'`
+- **Cause**: MySQL root user requires a password, but the code passes an empty string `""`.
+- **Solution**: Update the password argument in the `DriverManager.getConnection` calls across the source files, or grant passwordless access for local root connections:
+  ```sql
+  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
+  FLUSH PRIVILEGES;
+  ```
+
+### Problem: `Table 'program_aplikasi.user' doesn't exist`
+- **Cause**: The database exists but the tables were not imported.
+- **Solution**: Re-import `database.sql`:
+  ```bash
+  mysql -u root -p program_aplikasi < database.sql
+  ```
+
+### Problem: `JRFontNotFoundException`
+- **Cause**: Host operating system lacks the font requested by JasperReports.
+- **Solution**: `reportPenjualan.jrxml` is configured to use universal `SansSerif` fonts, and `jasperreports.properties` enables `net.sf.jasperreports.awt.ignore.missing.font=true`. Ensure `jasperreports.properties` is present in `build/classes/`.
+
+### Problem: Window clipping on small laptop screens
+- **Cause**: Display resolution lower than 1366x768.
+- **Solution**: All modules are wrapped in smooth-scrolling `JScrollPane` containers and window resizing (`setResizable(true)`) is enabled. Use the mouse wheel or maximize the window to reveal all form inputs and action buttons.
+
+---
+
+## 9. License
+
+This repository is maintained for educational and professional demonstration purposes.
