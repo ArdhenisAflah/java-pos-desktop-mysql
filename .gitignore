@@ -1,0 +1,16 @@
+# Compiled class files
+build/
+dist/
+nbproject/private/
+
+# NetBeans lock files
+*.lock
+
+# User-specific files
+.idea/
+*.iml
+.vscode/
+
+# OS metadata
+.DS_Store
+Thumbs.db
